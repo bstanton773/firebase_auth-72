@@ -5,7 +5,7 @@ import Home from './views/Home';
 import Register from './views/Register';
 import Login from './views/Login';
 import fire from './config/Fire';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 
 
 export default class App extends Component {
@@ -33,7 +33,6 @@ export default class App extends Component {
 
   register = (e) => {
     e.preventDefault();
-    console.log(e);
     const email = e.target.email.value;
     const password = e.target.password.value;
     const confirmPass = e.target.confirmPass.value;
@@ -41,11 +40,22 @@ export default class App extends Component {
       alert('Your passwords are not the same')
       return
     }
-    console.log(email, password, confirmPass)
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log(userCredential)
+        const user = userCredential.user;
+        console.log(user)
+      })
+      .catch(err => {
+        console.error(err)
+      })
   }
 
   logout = () =>{
-    console.log('Sign Out');
+    const auth = getAuth();
+    signOut(auth).then(()=>{})
+      .catch(err => console.error(err))
   }
 
   login = (e) =>{
